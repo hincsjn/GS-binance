@@ -3,10 +3,11 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 import schedule
+import os
 
 from pprint import pprint
 c = 1
-a, b, = 1, 1
+# a, b, = 1, 1
 import httplib2
 import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
@@ -23,13 +24,15 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 
-options = webdriver.ChromeOptions()
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
-options.add_argument('headless')
-options.add_argument('window-size=1920x935')
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+driver = webdriver.Chrome(executable_path=os.environ.get("C:\\Users\\gumeo\\Desktop\\шлак\\коддинг\\selenium\\chromedriver\\chromedriver.exe"), options=chrome_options)
 
 
-driver = webdriver.Chrome(service=Service("C:\\Users\\gumeo\\Desktop\\шлак\\коддинг\\selenium\\chromedriver\\chromedriver.exe"), options=options)
+# driver = webdriver.Chrome(service=Service("C:\\Users\\gumeo\\Desktop\\шлак\\коддинг\\selenium\\chromedriver\\chromedriver.exe"), options=options)
 
 
 def accept_all():
@@ -87,7 +90,7 @@ def get_tinkoff_USDT():
 #         print(ex)
 
 def work():
-    global a, b
+    # global a, b
     driver = webdriver.Chrome(service=Service("C:\\Users\\gumeo\\Desktop\\шлак\\коддинг\\selenium\\chromedriver\\chromedriver.exe"), options=options)
     fiat_uzs = get_fiat_UZS()
     tinkoff_USDT = get_tinkoff_USDT()
@@ -112,8 +115,8 @@ def work():
         ]
         }
     ).execute()
-    a += 1
-    b += 1
+    # a += 1
+    # b += 1
     # print(values)
 
 schedule.every(1).minutes.do(work)
